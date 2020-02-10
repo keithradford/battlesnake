@@ -9,6 +9,8 @@ Documenting general strategy and approach.
   4. (FINAL FALLBACK, UNLIKELY) if center and nothing else to worry about random direction. Mostly for approaching wall.
   
   *Validate each decision: must check where body is so it doesn't collide with self. Validation may follow same plan.
+  ##### Validation
+  Check to see if will hit wall, self, other snake
   
 #### Advanced strat
 will decide...
