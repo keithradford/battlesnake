@@ -5,6 +5,8 @@ import bottle
 
 from api import ping_response, start_response, move_response, end_response
 
+height = 0
+width = 0
 
 @bottle.route('/')
 def index():
@@ -54,6 +56,9 @@ def start():
 
 @bottle.post('/move')
 def move():
+    global height
+    global width
+
     data = bottle.request.json
 
     """
@@ -73,41 +78,17 @@ def move():
     snake = data['you']['body']
     height = data['board']['height']
     width = data['board']['width']
-    food = data['board']['food']
+    food_list = data['board']['food']
 
-    closest_food = get_closest_food(food, head)
-    tmp_food = closest_food
+    closest_food = get_closest_food(food_list, head)
+    food = closest_food
 
     move = up
 
     # Move towards closest food, pretty up later
-    if(tmp_food[0][0] > 0):
-        while(tmp_food[0][0] > 0):
-            move = verify_left(snake)
-            return move_response(move)
-    elif(tmp_food[0][0] < 0):
-        while(tmp_food[0][0] < 0):
-            move = right
-            return move_response(move)
-
-    if(tmp_food[0][1] > 0):
-        while(tmp_food[0][1] > 0):
-            move = up
-            return move_response(move)
-    elif(tmp_food[0][1] < 0):
-        while(tmp_food[0][1] < 0):
-            move = down
-            return move_response(move)
-
-    # if(head['x'] == 0):
-    #     return move_response(down)
-    # if(head['y'] == height):
-    #     return move_response(right)
-    # elif(head['x'] == width and head['y'] == 0):
-    #     return move_response(up)
-    # elif(head['y'] == 0 and head['x'] == width):
-    #     return move_response(left)
-
+    for i in range(len(food)):
+        if move_to_food(food[i], snake):
+            return move_response(move_to_food(food[i], snake))
 
 @bottle.post('/end')
 def end():
@@ -121,24 +102,161 @@ def end():
 
     return end_response()
 
+def move_to_food(food, snake):
+    if(food[0] > 0):
+        while(food[0] > 0):
+            move = verify_move(snake, 'left')
+            return move
+    elif(food[0] < 0):
+        while(food[0] < 0):
+            move = verify_move(snake, 'right')
+            return move
+    if(food[1] > 0):
+        while(food[1] > 0):
+            move = verify_move(snake, 'up')
+            return move
+    elif(food[1] < 0):
+        while(food[1] < 0):
+            move = verify_move(snake, 'down')
+            return move  
+
+# verify_move
+# Parameters: list of snake's body coordinates, the move to be verified
+# Returns: a boolean value; true if the move is good to execute, false otherwise
+# This function will replace verify_left/down/up/right to avoid the recursion errors with the current system.
+# Instead of choosing a random direction if the move won't be succesful, when returned false the next best move will be chosen.
+# This will mitigate the need for recursion, and recursion can be used only as a fallback.
+def verify_move(snake, move):
+    global height
+    global width
+
+    #THINK OF HOW TO CLEAN THIS UP
+    #PRIORITIZE TURNING AWAY FROM WALLS AND FROM BODY? !? ?!!!
+    if(move == 'left' and verify_left(snake, height, width) == True):
+        return 'left'
+    elif(move == 'left' and verify_right(snake, height, width) == True):
+        return 'right'
+    elif(move == 'left' and verify_up(snake, height, width) == True):
+        return 'up'
+    elif(move == 'left' and verify_down(snake, height, width) == True):
+        return 'down'
+
+    if(move == 'right' and verify_right(snake, height, width) == True):
+        return 'right'
+    elif(move == 'right' and verify_left(snake, height, width) == True):
+        return 'left'
+    elif(move == 'right' and verify_up(snake, height, width) == True):
+        return 'up'
+    elif(move == 'right' and verify_down(snake, height, width) == True):
+        return 'down'
+
+    if(move == 'up' and verify_up(snake, height, width) == True):
+        return 'up'
+    elif(move == 'up' and verify_right(snake, height, width) == True):
+        return 'right'
+    elif(move == 'up' and verify_left(snake, height, width) == True):
+        return 'left'
+    elif(move == 'up' and verify_down(snake, height, width) == True):
+        return 'down'
+
+    if(move == 'down' and verify_down(snake, height, width) == True):
+        return 'down'
+    elif(move == 'down' and verify_right(snake, height, width) == True):
+        return 'right'
+    elif(move == 'down' and verify_up(snake, height, width) == True):
+        return 'up'
+    elif(move == 'down' and verify_left(snake, height, width) == True):
+        return 'left'
+
 # verify_left
 # Parameters: list of snake's body coordinates
 # Returns: the appropriate move to make
 # Fist checks to see if the snake can turn left, if not find an appropriate move
-def verify_left(snake):
+def verify_left(snake, h, w):
     head = snake[0]
     snake_len = len(snake)
     left_move = head.copy()
     left_move['x'] -= 1
     if(left_move['x'] == -1):   #wall
         print("almost collided with wall, left")
-        return 'up'
+        return False
     for i in range(snake_len):  #body
         if(left_move == snake[i]):
             print("almost collided with self, left", left_move, snake[i])
-            return 'down'
-    return 'left'
+            return False
+    return True
     #OTHER SNAKE
+
+# verify_left
+# Parameters: list of snake's body coordinates
+# Returns: the appropriate move to make
+# Fist checks to see if the snake can turn left, if not find an appropriate move
+def verify_right(snake, h, w):
+    head = snake[0]
+    snake_len = len(snake)
+    right_move = head.copy()
+    right_move['x'] += 1
+    if(right_move['x'] == w):   #wall
+        print("almost collided with wall, right")
+        return False
+    for i in range(snake_len):  #body
+        if(right_move == snake[i]):
+            print("almost collided with self, right", right_move, snake[i])
+            return False
+    return True
+    #OTHER SNAKE
+
+# verify_left
+# Parameters: list of snake's body coordinates
+# Returns: the appropriate move to make
+# Fist checks to see if the snake can turn left, if not find an appropriate move
+def verify_up(snake, h, w):
+    head = snake[0]
+    snake_len = len(snake)
+    up_move = head.copy()
+    up_move['y'] -= 1
+    if(up_move['y'] == -1):   #wall
+        print("almost collided with wall, up")
+        return False
+    for i in range(snake_len):  #body
+        if(up_move == snake[i]):
+            print("almost collided with self, up", up_move, snake[i])
+            return False
+    return True
+    #OTHER SNAKE
+
+# verify_left
+# Parameters: list of snake's body coordinates
+# Returns: the appropriate move to make
+# Fist checks to see if the snake can turn left, if not find an appropriate move
+def verify_down(snake, h, w):
+    head = snake[0]
+    snake_len = len(snake)
+    down_move = head.copy()
+    down_move['y'] += 1
+    if(down_move['y'] == h):   #wall
+        print("almost collided with wall, down")
+        return False
+    for i in range(snake_len):  #body
+        if(down_move == snake[i]):
+            print("almost collided with self, down", down_move, snake[i])
+            return False
+    return True
+    #OTHER SNAKE
+
+# decide_direction_wall
+# Parameters: coordinates of self
+# if near wall, try and go away
+def decide_direction_wall(snake):
+    global height
+    global width
+    pass
+
+# decide_direction_self
+# Parameters: coordinates of self
+# if near self, try and go away
+def decide_direction_self(snake):
+    pass
 
 # get_closest_food
 # Parameters: list of food coordinates, snake head coordinates
