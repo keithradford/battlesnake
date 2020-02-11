@@ -69,36 +69,43 @@ def move():
     left = directions[2]
     right = directions[3]
 
-    snake = data['you']['body'][0]
+    head = data['you']['body'][0]
+    snake = data['you']['body']
     height = data['board']['height']
     width = data['board']['width']
     food = data['board']['food']
 
-    closest_food = get_closest_food(food, snake)
+    closest_food = get_closest_food(food, head)
     tmp_food = closest_food
+
+    move = up
 
     # Move towards closest food, pretty up later
     if(tmp_food[0][0] > 0):
         while(tmp_food[0][0] > 0):
-            return move_response(left)
+            move = verify_left(snake)
+            return move_response(move)
     elif(tmp_food[0][0] < 0):
         while(tmp_food[0][0] < 0):
-            return move_response(right)
+            move = right
+            return move_response(move)
 
     if(tmp_food[0][1] > 0):
         while(tmp_food[0][1] > 0):
-            return move_response(up)
+            move = up
+            return move_response(move)
     elif(tmp_food[0][1] < 0):
         while(tmp_food[0][1] < 0):
-            return move_response(down)
+            move = down
+            return move_response(move)
 
-    # if(snake['x'] == 0):
+    # if(head['x'] == 0):
     #     return move_response(down)
-    # if(snake['y'] == height):
+    # if(head['y'] == height):
     #     return move_response(right)
-    # elif(snake['x'] == width and snake['y'] == 0):
+    # elif(head['x'] == width and head['y'] == 0):
     #     return move_response(up)
-    # elif(snake['y'] == 0 and snake['x'] == width):
+    # elif(head['y'] == 0 and head['x'] == width):
     #     return move_response(left)
 
 
@@ -113,6 +120,25 @@ def end():
     print(json.dumps(data))
 
     return end_response()
+
+# verify_left
+# Parameters: list of snake's body coordinates
+# Returns: the appropriate move to make
+# Fist checks to see if the snake can turn left, if not find an appropriate move
+def verify_left(snake):
+    head = snake[0]
+    snake_len = len(snake)
+    left_move = head.copy()
+    left_move['x'] -= 1
+    if(left_move['x'] == -1):   #wall
+        print("almost collided with wall, left")
+        return 'up'
+    for i in range(snake_len):  #body
+        if(left_move == snake[i]):
+            print("almost collided with self, left", left_move, snake[i])
+            return 'down'
+    return 'left'
+    #OTHER SNAKE
 
 # get_closest_food
 # Parameters: list of food coordinates, snake head coordinates
