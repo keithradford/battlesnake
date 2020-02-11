@@ -384,6 +384,9 @@ def decide_direction_wall(snake, try_flag):
 # Parameters: coordinates of self
 # if near self, try and go away
 def decide_direction_self(snake):
+    global width
+    global height
+
     head = snake[0]
     avg_snake = [0, 0]
     snake_len = len(snake)
@@ -395,10 +398,14 @@ def decide_direction_self(snake):
     avg_snake[0] /= snake_len
     avg_snake[1] /= snake_len
     # print(avg_snake, "AVERAGE----------!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-    if(head['x'] > avg_snake[0]):
-        return 'right'
-    elif(head['y'] > avg_snake[1]):
-        return 'down'
+    if(head['x'] > width/2):
+        if(head['x'] > avg_snake[0]):
+            return 'right'
+    elif(head['x'] < width/2):
+        if(head['x'] > avg_snake[0]):
+            return 'right'
+        elif(head['y'] > avg_snake[1]):
+            return 'down'
     # elif(head['x'] < avg_snake[0]):
     #     return 'left'
     # elif(head['y'] < avg_snake[1]):
