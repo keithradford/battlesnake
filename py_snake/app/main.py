@@ -65,7 +65,8 @@ def move():
     TODO: Using the data from the endpoint request object, your
             snake AI must choose a direction to move in.
     """
-    print(json.dumps(data))
+    # print(json.dumps(data))
+    print(data['turn'])
 
     directions = ['up', 'down', 'left', 'right']
     direction = directions[1]
@@ -131,79 +132,91 @@ def verify(snake, move):
     global height
     global width
 
-    #THINK OF HOW TO CLEAN THIS UP
-    #PRIORITIZE TURNING AWAY FROM WALLS AND FROM BODY? !? ?!!!
-    if(move == 'left' and verify_move('left', snake, height, width) == True):
-        return 'left'
-    elif(decide_direction_self(snake) != False and verify_move(decide_direction_self(snake), snake, height, width) == True):
-        return decide_direction_self(snake)
-    if(decide_direction_wall(snake, 0) != False and verify_move(decide_direction_wall(snake, 0), snake, height, width) == True):
-        print("TRYING TO MOVE AWAY FROM WALL")
-        return decide_direction_wall(snake, 0)
-    elif(decide_direction_wall(snake, 1) != False and verify_move(decide_direction_wall(snake, 1), snake, height, width) == True):
-        print("TRYING TO MOVE AWAY FROM WALL")
-        return decide_direction_wall(snake, 1)
+    print("I WANT TO MOVE", move)
 
-    elif(move == 'left' and verify_move('right', snake, height, width) == True):
-        return 'right'
-    elif(move == 'left' and verify_move('up', snake, height, width) == True):
-        return 'up'
-    elif(move == 'left' and verify_move('down', snake, height, width) == True):
-        return 'down'
+    if(move == 'left'):
+        if(verify_move('left', snake, height, width) == True):
+            print("TURN TO FOOD", snake[0]['x'], snake[0]['y'])
+            return 'left'
+        elif(decide_direction_self(snake) != False and verify_move(decide_direction_self(snake), snake, height, width) == True):
+            print("MOVE AWAY FROM SELF", snake[0]['x'], snake[0]['y'])
+            return decide_direction_self(snake)
+        elif(decide_direction_wall(snake, 0) != False and verify_move(decide_direction_wall(snake, 0), snake, height, width) == True):
+            print("TRYING TO MOVE AWAY FROM WALL", snake[0]['x'], snake[0]['y'])
+            return decide_direction_wall(snake, 0)
+        elif(decide_direction_wall(snake, 1) != False and verify_move(decide_direction_wall(snake, 1), snake, height, width) == True):
+            print("TRYING TO MOVE AWAY FROM WALL", snake[0]['x'], snake[0]['y'])
+            return decide_direction_wall(snake, 1)
 
-    if(move == 'right' and verify_move('right', snake, height, width) == True):
-        return 'right'
-    elif(decide_direction_self(snake) != False and verify_move(decide_direction_self(snake), snake, height, width) == True):
-        return decide_direction_self(snake)
-    if(decide_direction_wall(snake, 0) != False and verify_move(decide_direction_wall(snake, 0), snake, height, width) == True):
-        print("TRYING TO MOVE AWAY FROM WALL")
-        return decide_direction_wall(snake, 0)
-    elif(decide_direction_wall(snake, 1) != False and verify_move(decide_direction_wall(snake, 1), snake, height, width) == True):
-        print("TRYING TO MOVE AWAY FROM WALL")
-        return decide_direction_wall(snake, 1)
+        elif(move == 'left' and verify_move('right', snake, height, width) == True):
+            return 'right'
+        elif(move == 'left' and verify_move('up', snake, height, width) == True):
+            return 'up'
+        elif(move == 'left' and verify_move('down', snake, height, width) == True):
+            return 'down'
 
-    elif(move == 'right' and verify_move('left', snake, height, width) == True):
-        return 'left'
-    elif(move == 'right' and verify_move('up', snake, height, width) == True):
-        return 'up'
-    elif(move == 'right' and verify_move('down', snake, height, width) == True):
-        return 'down'
+    elif(move == 'right'):
+        if(verify_move('right', snake, height, width) == True):
+            print("TURN TO FOOD", snake[0]['x'], snake[0]['y'])
+            return 'right'
+        elif(decide_direction_self(snake) != False and verify_move(decide_direction_self(snake), snake, height, width) == True):
+            print("MOVE AWAY FROM SELF", snake[0]['x'], snake[0]['y'])
+            return decide_direction_self(snake)
+        elif(decide_direction_wall(snake, 0) != False and verify_move(decide_direction_wall(snake, 0), snake, height, width) == True):
+            print("TRYING TO MOVE AWAY FROM WALL", snake[0]['x'], snake[0]['y'])
+            return decide_direction_wall(snake, 0)
+        elif(decide_direction_wall(snake, 1) != False and verify_move(decide_direction_wall(snake, 1), snake, height, width) == True):
+            print("TRYING TO MOVE AWAY FROM WALL", snake[0]['x'], snake[0]['y'])
+            return decide_direction_wall(snake, 1)
 
-    if(move == 'up' and verify_move('up', snake, height, width) == True):
-        return 'up'
-    elif(decide_direction_self(snake) != False and verify_move(decide_direction_self(snake), snake, height, width) == True):
-        return decide_direction_self(snake)
-    if(decide_direction_wall(snake, 0) != False and verify_move(decide_direction_wall(snake, 0), snake, height, width) == True):
-        print("TRYING TO MOVE AWAY FROM WALL")
-        return decide_direction_wall(snake, 0)
-    elif(decide_direction_wall(snake, 1) != False and verify_move(decide_direction_wall(snake, 1), snake, height, width) == True):
-        print("TRYING TO MOVE AWAY FROM WALL")
-        return decide_direction_wall(snake, 1)
+        elif(move == 'right' and verify_move('left', snake, height, width) == True):
+            return 'left'
+        elif(move == 'right' and verify_move('up', snake, height, width) == True):
+            return 'up'
+        elif(move == 'right' and verify_move('down', snake, height, width) == True):
+            return 'down'
 
-    elif(move == 'up' and verify_move('right', snake, height, width) == True):
-        return 'right'
-    elif(move == 'up' and verify_move('left', snake, height, width) == True):
-        return 'left'
-    elif(move == 'up' and verify_move('down', snake, height, width) == True):
-        return 'down'
+    elif(move == 'up'):
+        if(verify_move('up', snake, height, width) == True):
+            print("TURN TO FOOD", snake[0]['x'], snake[0]['y'])
+            return 'up'
+        elif(decide_direction_self(snake) != False and verify_move(decide_direction_self(snake), snake, height, width) == True):
+            print("MOVE AWAY FROM SELF", snake[0]['x'], snake[0]['y'])
+            return decide_direction_self(snake)
+        elif(decide_direction_wall(snake, 0) != False and verify_move(decide_direction_wall(snake, 0), snake, height, width) == True):
+            print("TRYING TO MOVE AWAY FROM WALL", snake[0]['x'], snake[0]['y'])
+            return decide_direction_wall(snake, 0)
+        elif(decide_direction_wall(snake, 1) != False and verify_move(decide_direction_wall(snake, 1), snake, height, width) == True):
+            print("TRYING TO MOVE AWAY FROM WALL", snake[0]['x'], snake[0]['y'])
+            return decide_direction_wall(snake, 1)
 
-    if(move == 'down' and verify_move('down', snake, height, width) == True):
-        return 'down'
-    elif(decide_direction_self(snake) != False and verify_move(decide_direction_self(snake), snake, height, width) == True):
-        return decide_direction_self(snake)
-    if(decide_direction_wall(snake, 0) != False and verify_move(decide_direction_wall(snake, 0), snake, height, width) == True):
-        print("TRYING TO MOVE AWAY FROM WALL")
-        return decide_direction_wall(snake, 0)
-    elif(decide_direction_wall(snake, 1) != False and verify_move(decide_direction_wall(snake, 1), snake, height, width) == True):
-        print("TRYING TO MOVE AWAY FROM WALL")
-        return decide_direction_wall(snake, 1)
+        elif(move == 'up' and verify_move('right', snake, height, width) == True):
+            return 'right'
+        elif(move == 'up' and verify_move('left', snake, height, width) == True):
+            return 'left'
+        elif(move == 'up' and verify_move('down', snake, height, width) == True):
+            return 'down'
 
-    elif(move == 'down' and verify_move('right', snake, height, width) == True):
-        return 'right'
-    elif(move == 'down' and verify_move('up', snake, height, width) == True):
-        return 'up'
-    elif(move == 'down' and verify_move('left', snake, height, width) == True):
-        return 'left'
+    elif(move == 'down'):
+        if(verify_move('down', snake, height, width) == True):
+            print("TURN TO FOOD", snake[0]['x'], snake[0]['y'])
+            return 'down'
+        elif(decide_direction_self(snake) != False and verify_move(decide_direction_self(snake), snake, height, width) == True):
+            print("MOVE AWAY FROM SELF", snake[0]['x'], snake[0]['y'])
+            return decide_direction_self(snake)
+        elif(decide_direction_wall(snake, 0) != False and verify_move(decide_direction_wall(snake, 0), snake, height, width) == True):
+            print("TRYING TO MOVE AWAY FROM WALL", snake[0]['x'], snake[0]['y'])
+            return decide_direction_wall(snake, 0)
+        elif(decide_direction_wall(snake, 1) != False and verify_move(decide_direction_wall(snake, 1), snake, height, width) == True):
+            print("TRYING TO MOVE AWAY FROM WALL", snake[0]['x'], snake[0]['y'])
+            return decide_direction_wall(snake, 1)
+
+        elif(move == 'down' and verify_move('right', snake, height, width) == True):
+            return 'right'
+        elif(move == 'down' and verify_move('up', snake, height, width) == True):
+            return 'up'
+        elif(move == 'down' and verify_move('left', snake, height, width) == True):
+            return 'left'
 
 # verify_move
 # Parameters: move to make, list of snake's body coordinates
@@ -217,11 +230,11 @@ def verify_move(move, snake, h, w):
         left_move = head.copy()
         left_move['x'] -= 1
         if(left_move['x'] == -1):   #wall
-            print("almost collided with wall, left")
+            # print("almost collided with wall, left")
             return False
         for i in range(snake_len):  #body
             if(left_move == snake[i]):
-                print("almost collided with self, left", left_move, snake[i])
+                # print("almost collided with self, left", left_move, snake[i])
                 return False
         return True
 
@@ -231,11 +244,11 @@ def verify_move(move, snake, h, w):
         right_move = head.copy()
         right_move['x'] += 1
         if(right_move['x'] == w):   #wall
-            print("almost collided with wall, right")
+            # print("almost collided with wall, right")
             return False
         for i in range(snake_len):  #body
             if(right_move == snake[i]):
-                print("almost collided with self, right", right_move, snake[i])
+                # print("almost collided with self, right", right_move, snake[i])
                 return False
         return True
 
@@ -243,11 +256,11 @@ def verify_move(move, snake, h, w):
         up_move = head.copy()
         up_move['y'] -= 1
         if(up_move['y'] == -1):   #wall
-            print("almost collided with wall, up")
+            # print("almost collided with wall, up")
             return False
         for i in range(snake_len):  #body
             if(up_move == snake[i]):
-                print("almost collided with self, up", up_move, snake[i])
+                # print("almost collided with self, up", up_move, snake[i])
                 return False
         return True
     
@@ -255,91 +268,13 @@ def verify_move(move, snake, h, w):
         down_move = head.copy()
         down_move['y'] += 1
         if(down_move['y'] == h):   #wall
-            print("almost collided with wall, down")
+            # print("almost collided with wall, down")
             return False
         for i in range(snake_len):  #body
             if(down_move == snake[i]):
-                print("almost collided with self, down", down_move, snake[i])
+                # print("almost collided with self, down", down_move, snake[i])
                 return False
         return True
-
-# DEPRECATED VERIFY FUNCTIONS, NOW IN VERIFY_MOVE
-
-# verify_left
-# Parameters: list of snake's body coordinates
-# Returns: the appropriate move to make
-# Fist checks to see if the snake can turn left, if not find an appropriate move
-# def verify_left(snake, h, w):
-#     head = snake[0]
-#     snake_len = len(snake)
-#     left_move = head.copy()
-#     left_move['x'] -= 1
-#     if(left_move['x'] == -1):   #wall
-#         print("almost collided with wall, left")
-#         return False
-#     for i in range(snake_len):  #body
-#         if(left_move == snake[i]):
-#             print("almost collided with self, left", left_move, snake[i])
-#             return False
-#     return True
-#     #OTHER SNAKE
-
-# # verify_left
-# # Parameters: list of snake's body coordinates
-# # Returns: the appropriate move to make
-# # Fist checks to see if the snake can turn left, if not find an appropriate move
-# def verify_right(snake, h, w):
-#     head = snake[0]
-#     snake_len = len(snake)
-#     right_move = head.copy()
-#     right_move['x'] += 1
-#     if(right_move['x'] == w):   #wall
-#         print("almost collided with wall, right")
-#         return False
-#     for i in range(snake_len):  #body
-#         if(right_move == snake[i]):
-#             print("almost collided with self, right", right_move, snake[i])
-#             return False
-#     return True
-#     #OTHER SNAKE
-
-# # verify_left
-# # Parameters: list of snake's body coordinates
-# # Returns: the appropriate move to make
-# # Fist checks to see if the snake can turn left, if not find an appropriate move
-# def verify_up(snake, h, w):
-#     head = snake[0]
-#     snake_len = len(snake)
-#     up_move = head.copy()
-#     up_move['y'] -= 1
-#     if(up_move['y'] == -1):   #wall
-#         print("almost collided with wall, up")
-#         return False
-#     for i in range(snake_len):  #body
-#         if(up_move == snake[i]):
-#             print("almost collided with self, up", up_move, snake[i])
-#             return False
-#     return True
-#     #OTHER SNAKE
-
-# # verify_left
-# # Parameters: list of snake's body coordinates
-# # Returns: the appropriate move to make
-# # Fist checks to see if the snake can turn left, if not find an appropriate move
-# def verify_down(snake, h, w):
-#     head = snake[0]
-#     snake_len = len(snake)
-#     down_move = head.copy()
-#     down_move['y'] += 1
-#     if(down_move['y'] == h):   #wall
-#         print("almost collided with wall, down")
-#         return False
-#     for i in range(snake_len):  #body
-#         if(down_move == snake[i]):
-#             print("almost collided with self, down", down_move, snake[i])
-#             return False
-#     return True
-#     #OTHER SNAKE
 
 # decide_direction_wall
 # Parameters: coordinates of self
@@ -391,33 +326,38 @@ def decide_direction_self(snake):
     avg_snake = [0, 0]
     snake_len = len(snake)
 
-    #CHECK WHICH QUADRANT IT'S IN, THEN MOVE AWAY FROM AVG SNAKE LOCATION BASED ON THAT
+    #CHECK WHICH QUADRANT IT'S IN, THEN MOVE AWAY FROM AVG SNAKE LOCATION BASED ON THAT ./
+    #prioritize if x or y is returned first based on the bigger of head_location - avg_snake(*-1 if <0 no biggy),
+    # then determine what quadrant the average is in, and move BASED ON THIS INFO. Will be a lot but should improve this algorithm.
+    # i.e if y is bigger, head is in bottom left, avgY is in top left, then you would probably want to go down. If this is false,
+    # Then it can do the X one;!
     for i in range(snake_len):
         avg_snake[0] += snake[i]['x'] 
         avg_snake[1] += snake[i]['y']
     avg_snake[0] /= snake_len
     avg_snake[1] /= snake_len
+    buff = snake_len / 3
     # print(avg_snake, "AVERAGE----------!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     if(snake_len > 10):
-        if(head['x'] > width/2 and head['y'] < height/2): #bottom right
-            if(head['x'] > avg_snake[0]):
+        if(head['x'] > width/2 and head['y'] > height/2): #bottom right
+            if(head['x'] > avg_snake[0] - buff):
                 return 'up'
-            elif(head['y'] > avg_snake[1]):
+            elif(head['y'] > avg_snake[1] - buff):
                 return 'left'
-        elif(head['x'] > width/2 and head['y'] > height/2): #top right
-            if(head['x'] > avg_snake[0]):
+        elif(head['x'] > width/2 and head['y'] < height/2): #top right
+            if(head['x'] > avg_snake[0] - buff):
                 return 'down'
-            elif(head['y'] < avg_snake[1]):
+            elif(head['y'] < avg_snake[1] + buff):
                 return 'left'
         elif(head['x'] < width/2 and head['y'] > height/2): #bottom left
-            if(head['x'] < avg_snake[0]):
+            if(head['x'] < avg_snake[0] + buff): 
                 return 'up'
-            elif(head['y'] > avg_snake[1]):
+            elif(head['y'] > avg_snake[1] - buff):
                 return 'right'
         elif(head['x'] < width/2 and head['y'] < height/2): #top left
-            if(head['x'] < avg_snake[0]):
+            if(head['x'] < avg_snake[0] + buff):
                 return 'down'
-            elif(head['y'] < avg_snake[1]):
+            elif(head['y'] < avg_snake[1] + buff):
                 return 'right'
     # elif(head['x'] < avg_snake[0]):
     #     return 'left'
