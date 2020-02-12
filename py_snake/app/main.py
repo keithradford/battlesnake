@@ -77,6 +77,7 @@ def move():
 
     head = data['you']['body'][0]
     snake = data['you']['body']
+    snake_len = len(snake)
     height = data['board']['height']
     width = data['board']['width']
     food_list = data['board']['food']
@@ -90,9 +91,13 @@ def move():
     # Eventually move_to_food will be replaced with move_away_from_opponent as the first play called.
     # Try and deprecate current verification steps and put them up here in more organized fashion.
     # ^^^ After the algorithms work..!s
-    for i in range(len(food)):
-        if move_to_food(food[i], snake):
-            return move_response(move_to_food(food[i], snake))
+    if(snake_len <= 10 or data['you']['health'] < 55):
+        for i in range(len(food)):
+            if move_to_food(food[i], snake):
+                return move_response(move_to_food(food[i], snake))
+    else:
+        print("I'm already pretty big, I don' tneed food.")
+        return move_response(verify(snake, random.choice(directions)))
 
 @bottle.post('/end')
 def end():
@@ -102,8 +107,7 @@ def end():
     TODO: If your snake AI was stateful,
         clean up any stateful objects here.
     """
-    # print(json.dumps(data))
-    print(data['turn'])
+    print(json.dumps(data))
 
     return end_response()
 
@@ -134,6 +138,8 @@ def move_to_food(food, snake):
 # 2. Can it move a direction that will **likely** not corner itself?
 # 3/4. Can it try and move away from the wall? This won't happen much, but as a "last resort" it tries to move to the center of the map. Needs a revamp, should only really happen if no food is near.
 # 5. Just go wherever it can. Also needs a revamp, don't want it to check in order of the directions I placed down but rather check in order of what makes sense based on it's position, similar/merge with step 2.
+#
+# If decide_direction_self can be optimized to an ideal point, it should take priority over going towards food. Especially If it's already pretty big.
 def verify(snake, move):
     global height
     global width
@@ -325,6 +331,9 @@ def decide_direction_wall(snake, try_flag):
 
     return False
 
+#-----------------------
+# BIGGEST PRIORITY!!!!! |
+#-----------------------
 # decide_direction_self
 # Parameters: Coordinates of self
 # Returns: A direction to move away from itself, False if it's in a good position.
@@ -353,22 +362,22 @@ def decide_direction_self(snake):
     buff = snake_len / 3
     # print(avg_snake, "AVERAGE----------!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     if(snake_len > 10):
-        if(head['x'] > width/2 and head['y'] > height/2): #bottom right
+        if(head['x'] >= width/2 and head['y'] >= height/2): #bottom right
             if(head['x'] > avg_snake[0] - buff):
                 return 'up'
             elif(head['y'] > avg_snake[1] - buff):
                 return 'left'
-        elif(head['x'] > width/2 and head['y'] < height/2): #top right
+        elif(head['x'] >= width/2 and head['y'] <= height/2): #top right
             if(head['x'] > avg_snake[0] - buff):
                 return 'down'
             elif(head['y'] < avg_snake[1] + buff):
                 return 'left'
-        elif(head['x'] < width/2 and head['y'] > height/2): #bottom left
+        elif(head['x'] <= width/2 and head['y'] >= height/2): #bottom left
             if(head['x'] < avg_snake[0] + buff): 
                 return 'up'
             elif(head['y'] > avg_snake[1] - buff):
                 return 'right'
-        elif(head['x'] < width/2 and head['y'] < height/2): #top left
+        elif(head['x'] <= width/2 and head['y'] <= height/2): #top left
             if(head['x'] < avg_snake[0] + buff):
                 return 'down'
             elif(head['y'] < avg_snake[1] + buff):
@@ -381,7 +390,7 @@ def decide_direction_self(snake):
     return False
 
 # get_closest_food
-# Parameters: List of food coordinates, snake head coordinates
+# Parameters: List of food coord inates, snake head coordinates
 # Returns: Sorted list of steps to take to food. Order is closest food to furthest.
 def get_closest_food(food, snake):
     size = len(food)
