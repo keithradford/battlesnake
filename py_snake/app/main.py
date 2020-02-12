@@ -398,14 +398,27 @@ def decide_direction_self(snake):
     avg_snake[0] /= snake_len
     avg_snake[1] /= snake_len
     # print(avg_snake, "AVERAGE----------!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-    if(head['x'] > width/2):
-        if(head['x'] > avg_snake[0]):
-            return 'right'
-    elif(head['x'] < width/2):
-        if(head['x'] > avg_snake[0]):
-            return 'right'
-        elif(head['y'] > avg_snake[1]):
-            return 'down'
+    if(snake_len > 10):
+        if(head['x'] > width/2 and head['y'] < height/2): #bottom right
+            if(head['x'] > avg_snake[0]):
+                return 'up'
+            elif(head['y'] > avg_snake[1]):
+                return 'left'
+        elif(head['x'] > width/2 and head['y'] > height/2): #top right
+            if(head['x'] > avg_snake[0]):
+                return 'down'
+            elif(head['y'] < avg_snake[1]):
+                return 'left'
+        elif(head['x'] < width/2 and head['y'] > height/2): #bottom left
+            if(head['x'] < avg_snake[0]):
+                return 'up'
+            elif(head['y'] > avg_snake[1]):
+                return 'right'
+        elif(head['x'] < width/2 and head['y'] < height/2): #top left
+            if(head['x'] < avg_snake[0]):
+                return 'down'
+            elif(head['y'] < avg_snake[1]):
+                return 'right'
     # elif(head['x'] < avg_snake[0]):
     #     return 'left'
     # elif(head['y'] < avg_snake[1]):
