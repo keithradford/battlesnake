@@ -86,7 +86,10 @@ def move():
 
     move = up
 
-    # Move towards closest food, pretty up later
+    # Goes through list of closest food, incase it cannot move to the closest food. Should improve this, works for now.
+    # Eventually move_to_food will be replaced with move_away_from_opponent as the first play called.
+    # Try and deprecate current verification steps and put them up here in more organized fashion.
+    # ^^^ After the algorithms work..!s
     for i in range(len(food)):
         if move_to_food(food[i], snake):
             return move_response(move_to_food(food[i], snake))
@@ -122,17 +125,20 @@ def move_to_food(food, snake):
             move = verify(snake, 'down')
             return move  
 
-# verify
-# Parameters: list of snake's body coordinates, the move to be verified
-# Returns: a boolean value; true if the move is good to execute, false otherwise
-# This function will replace verify_left/down/up/right to avoid the recursion errors with the current system.
-# Instead of choosing a random direction if the move won't be succesful, when returned false the next best move will be chosen.
-# This will mitigate the need for recursion, and recursion can be used only as a fallback.
+# verify (possibly rename to better fit it's function)
+# Parameters: List of the snake's body coordinates, the move to be verified
+# Returns: Final decision for the current turn's direction
+# Current function:
+# Based on the move being passed into the function (likely moving towards food) follows set amount of steps:
+# 1. Can it go this direction at all (no wall, won't go into itself)? If it can it should. Later want to decide if that's even an optimal move... for now it's #1 decision
+# 2. Can it move a direction that will **likely** not corner itself?
+# 3/4. Can it try and move away from the wall? This won't happen much, but as a "last resort" it tries to move to the center of the map. Needs a revamp, should only really happen if no food is near.
+# 5. Just go wherever it can. Also needs a revamp, don't want it to check in order of the directions I placed down but rather check in order of what makes sense based on it's position, similar/merge with step 2.
 def verify(snake, move):
     global height
     global width
 
-    print("I WANT TO MOVE", move)
+    print("I WANT TO MOVE:", move)
 
     if(move == 'left'):
         if(verify_move('left', snake, height, width) == True):
@@ -219,9 +225,11 @@ def verify(snake, move):
             return 'left'
 
 # verify_move
-# Parameters: move to make, list of snake's body coordinates
-# Returns: the appropriate move to make
-# Fist checks to see if the snake can turn left, if not find an appropriate move
+# Parameters: Move to make, list of snake's body coordinates
+# Returns: Boolean value based on the ability to make this move
+# Checks if the move will turn the snake into a wall, then if it will turn the snake into itself.
+# Will add verification of turning into other snakes.
+# If all tests pass, return True.
 def verify_move(move, snake, h, w):
     head = snake[0]
     snake_len = len(snake)
@@ -277,8 +285,10 @@ def verify_move(move, snake, h, w):
         return True
 
 # decide_direction_wall
-# Parameters: coordinates of self
-# if near wall, try and go away
+# Parameters: Coordinates of self
+# Returns: A direction to try and leave the proximity of a corner/wall
+# Checks if the position of the snakes head is in a corner or near a wall, will try and make an appropriate move based on it's corner.
+# Returns False if not near a wall.
 def decide_direction_wall(snake, try_flag):
     global height
     global width
@@ -316,8 +326,12 @@ def decide_direction_wall(snake, try_flag):
     return False
 
 # decide_direction_self
-# Parameters: coordinates of self
-# if near self, try and go away
+# Parameters: Coordinates of self
+# Returns: A direction to move away from itself, False if it's in a good position.
+# The algorithm checks where the snakes head is with respect to the average x and y location of the rest of it's body,
+# Based on this result and the quadrant of the board the snake is in, it will try and determine an appropriate move to minimize the likelyhood of cornering itself.
+# Function only really needed when the snake is much bigger, somehwere > 10.
+# See comments in function for further improvement plan.
 def decide_direction_self(snake):
     global width
     global height
@@ -364,12 +378,11 @@ def decide_direction_self(snake):
     # elif(head['y'] < avg_snake[1]):
     #     return 'up'
         
-
     return False
 
 # get_closest_food
-# Parameters: list of food coordinates, snake head coordinates
-# Returns: sorted list of coordinates to closest food
+# Parameters: List of food coordinates, snake head coordinates
+# Returns: Sorted list of steps to take to food. Order is closest food to furthest.
 def get_closest_food(food, snake):
     size = len(food)
     snake_loc = (snake['x'], snake['y'])
@@ -382,8 +395,8 @@ def get_closest_food(food, snake):
     return sorted(closest_food, key  = add_coord)
 
 # add_coord
-# Parameters: list item
-# Returns: sum of coordinates
+# Parameters: Tuple with 2 elements.
+# Returns: Sum of "coordinates".
 # If a number is negative, make it positive as this function serves to help sort coordinates in terms of relative position to snake    
 def add_coord(item):
     tmp_x = item[0]
