@@ -83,7 +83,9 @@ def move():
     height = data['board']['height']
     width = data['board']['width']
     food_list = data['board']['food']
+    opponents = data['board']['snakes']
 
+    closest_opponent = get_closest_opponent(opponents, head)
     closest_food = get_closest_food(food_list, head)
     food = closest_food
 
@@ -460,6 +462,23 @@ def y_first(snake, avg_snake, buff):
 
     return False
 
+# get_closest_opponent
+# Parameters: List of opponents, snake head coordinates
+# Returns: Sorted list of steps to an opponent. Order is closest to furthest.
+def get_closest_opponent(opponents, snake):
+    opp_amount = len(opponents)
+    snake_loc = (snake['x'], snake['y'])
+    opp_loc = []
+    curr_size = 0
+    for i in range(opp_amount):
+        curr_size = len(opponents[i]['body'])
+        for j in range(curr_size):
+            x, y = opponents[i]['body'][j]['x'], opponents[i]['body'][j]['y']
+            opp_loc.append((x, y))
+    print("OPPONENTS @", opp_loc)
+    closest_opp = [((snake_loc[0]-opp_loc[i][0]), (snake_loc[1]-food_loc[i][1])) for i in range(size)]
+    
+
 # get_closest_food
 # Parameters: List of food coord inates, snake head coordinates
 # Returns: Sorted list of steps to take to food. Order is closest food to furthest.
@@ -470,6 +489,7 @@ def get_closest_food(food, snake):
     for i in range(size):
         x, y = food[i]['x'], food[i]['y']
         food_loc.append((x, y))
+        #todo
     closest_food = [((snake_loc[0]-food_loc[i][0]), (snake_loc[1]-food_loc[i][1])) for i in range(size)]
 
     return sorted(closest_food, key  = add_coord)
