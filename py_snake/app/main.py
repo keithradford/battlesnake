@@ -101,12 +101,15 @@ def move():
                 return move_response(move_to_food(food[i], snake))
     elif(random.randint(0, 100) > 95):
         print("bog lottery winnnner")
+        print("verify random")
         return move_response(verify(snake, random.choice(directions)))
     elif(verify(snake, decide_direction_self(snake)) != False):
         print("I'm already pretty big, I don' tneed food. Let me move away from myself")
+        print("verify self")
         return move_response(verify(snake, decide_direction_self(snake)))
     elif(verify(snake, decide_direction_wall(snake, 0)) != False):
         print("I'm already pretty big, I don' tneed food. Let me move away from the wall")
+        print("verify wall")
         return move_response(verify(snake, decide_direction_wall(snake, 0)))
     else:
         print("got nothing go for food")
@@ -114,7 +117,8 @@ def move():
             if move_to_food(food[i], snake):
                 return move_response(move_to_food(food[i], snake))
 
-    return move_response(verify(snake, random.choice(directions)))
+    print("verify random")
+    return move_response(snake, random.choice(directions))
 
 @bottle.post('/end')
 def end():
@@ -131,18 +135,22 @@ def end():
 def move_to_food(food, snake):
     if(food[0] > 0):
         while(food[0] > 0):
+            print("verify left")
             move = verify(snake, 'left')
             return move
     elif(food[0] < 0):
         while(food[0] < 0):
+            print("verify right")
             move = verify(snake, 'right')
             return move
     if(food[1] > 0):
         while(food[1] > 0):
+            print("verify up")
             move = verify(snake, 'up')
             return move
     elif(food[1] < 0):
         while(food[1] < 0):
+            print("verify down")
             move = verify(snake, 'down')
             return move  
 
@@ -246,6 +254,8 @@ def verify(snake, move):
             return 'up'
         elif(move == 'down' and verify_move('left', snake, height, width) == True):
             return 'left'
+
+    return False
 
 # verify_move
 # Parameters: Move to make, list of snake's body coordinates
@@ -387,43 +397,16 @@ def decide_direction_self(snake):
     if(check_y < 0):
         check_y *= -1
 
-    #THEY'RE NEVER RETURNING FALSE, FIGURE OUT HOW TO RETURN FALSE! Need to try and get verify_move in there
-    if(check_x > check_y and snake_len > optimal_size and x_first(snake, avg_snake, buff) != False):
+    if(check_x > check_y and snake_len > optimal_size and x_first(snake, avg_snake, buff) != False and verify_move(x_first(snake, avg_snake, buff), snake, height, width) == True):
         return x_first(snake, avg_snake, buff)
-    elif(check_x > check_y and snake_len > optimal_size and x_first(snake, avg_snake, buff) == False):
+    elif(check_x > check_y and snake_len > optimal_size and y_first(snake, avg_snake, buff) != False and verify_move(y_first(snake, avg_snake, buff), snake, height, width) == True):
         print('go to y now')
         return y_first(snake, avg_snake, buff)
-    elif(check_y > check_x and snake_len > optimal_size and y_first(snake, avg_snake, buff) != False):
+    elif(check_y > check_x and snake_len > optimal_size and y_first(snake, avg_snake, buff) != False and verify_move(y_first(snake, avg_snake, buff), snake, height, width) == True):
         return y_first(snake, avg_snake, buff)
-    elif(check_y > check_x and snake_len > optimal_size and y_first(snake, avg_snake, buff) == False):
+    elif(check_y > check_x and snake_len > optimal_size and x_first(snake, avg_snake, buff) != False and verify_move(x_first(snake, avg_snake, buff), snake, height, width) == True):
         print('go to x now')
         return x_first(snake, avg_snake, buff)
-    # elif(snake_len > 10):
-    #     print("final option first")
-    #     if(avg_snake[0] >= width/2 and avg_snake[1] >= height/2): #bottom right
-    #         print("bottom right")
-    #         if(head['y'] > avg_snake[1] - buff):
-    #             return 'left'
-    #         elif(head['x'] > avg_snake[0] - buff):
-    #             return 'up'
-    #     elif(avg_snake[0] >= width/2 and avg_snake[1] <= height/2): #top right
-    #         print("top right")
-    #         if(head['y'] < avg_snake[1] + buff):
-    #             return 'left'
-    #         elif(head['x'] > avg_snake[0] - buff):
-    #             return 'down'
-    #     elif(avg_snake[0] <= width/2 and avg_snake[1] >= height/2): #bottom left
-    #         print("bottom left")
-    #         if(head['y'] > avg_snake[1] - buff):
-    #             return 'right'
-    #         elif(head['x'] < avg_snake[0] + buff): 
-    #             return 'up'
-    #     elif(avg_snake[0] <= width/2 and avg_snake[1] <= height/2): #top left
-    #         print("top left")
-    #         if(head['y'] < avg_snake[1] + buff):
-    #             return 'right'
-    #         elif(head['x'] < avg_snake[0] + buff):
-    #             return 'down'
 
     return False
 
@@ -480,84 +463,6 @@ def y_first(snake, avg_snake, buff):
     print('in y false next')
     return False
 
-    #     print("Doing X first")
-    #     if(head['x'] >= width/2 and head['y'] >= height/2): #bottom right
-    #         print("bottom right")
-    #         if(head['x'] > avg_snake[0] - buff):
-    #             return 'up'
-    #         elif(head['y'] > avg_snake[1] - buff):
-    #             return 'left'
-    #     elif(head['x'] >= width/2 and head['y'] <= height/2): #top right
-    #         print("top right")
-    #         if(head['x'] > avg_snake[0] - buff):
-    #             return 'down'
-    #         elif(head['y'] < avg_snake[1] + buff):
-    #             return 'left'
-    #     elif(head['x'] <= width/2 and head['y'] >= height/2): #bottom left
-    #         print("bottom left")
-    #         if(head['x'] < avg_snake[0] + buff): 
-    #             return 'up'
-    #         elif(head['y'] > avg_snake[1] - buff):
-    #             return 'right'
-    #     elif(head['x'] <= width/2 and head['y'] <= height/2): #top left
-    #         print("top left")
-    #         if(head['x'] < avg_snake[0] + buff):
-    #             return 'down'
-    #         elif(head['y'] < avg_snake[1] + buff):
-    #             return 'right'
-    # elif(check_y > check_x and snake_len > 10):
-    #     print("Doing Y first")
-    #     if(head['x'] >= width/2 and head['y'] >= height/2): #bottom right
-    #         print("bottom right")
-    #         if(head['y'] > avg_snake[1] - buff):
-    #             return 'left'
-    #         elif(head['x'] > avg_snake[0] - buff):
-    #             return 'up'
-    #     elif(head['x'] >= width/2 and head['y'] <= height/2): #top right
-    #         print("top right")
-    #         if(head['y'] < avg_snake[1] + buff):
-    #             return 'left'
-    #         elif(head['x'] > avg_snake[0] - buff):
-    #             return 'down'
-    #     elif(head['x'] <= width/2 and head['y'] >= height/2): #bottom left
-    #         print("bottom left")
-    #         if(head['y'] > avg_snake[1] - buff):
-    #             return 'right'
-    #         elif(head['x'] < avg_snake[0] + buff): 
-    #             return 'up'
-    #     elif(head['x'] <= width/2 and head['y'] <= height/2): #top left
-    #         print("top left")
-    #         if(head['y'] < avg_snake[1] + buff):
-    #             return 'right'
-    #         elif(head['x'] < avg_snake[0] + buff):
-    #             return 'down'
-    # elif(snake_len > 10):
-    #     print("final option first")
-    #     if(head['x'] >= width/2 and head['y'] >= height/2): #bottom right
-    #         print("bottom right")
-    #         if(head['y'] > avg_snake[1] - buff):
-    #             return 'left'
-    #         elif(head['x'] > avg_snake[0] - buff):
-    #             return 'up'
-    #     elif(head['x'] >= width/2 and head['y'] <= height/2): #top right
-    #         print("top right")
-    #         if(head['y'] < avg_snake[1] + buff):
-    #             return 'left'
-    #         elif(head['x'] > avg_snake[0] - buff):
-    #             return 'down'
-    #     elif(head['x'] <= width/2 and head['y'] >= height/2): #bottom left
-    #         print("bottom left")
-    #         if(head['y'] > avg_snake[1] - buff):
-    #             return 'right'
-    #         elif(head['x'] < avg_snake[0] + buff): 
-    #             return 'up'
-    #     elif(head['x'] <= width/2 and head['y'] <= height/2): #top left
-    #         print("top left")
-    #         if(head['y'] < avg_snake[1] + buff):
-    #             return 'right'
-    #         elif(head['x'] < avg_snake[0] + buff):
-    #             return 'down'
-        
     return False
 
 # get_closest_food
