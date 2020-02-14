@@ -94,11 +94,10 @@ def move():
     # Try and deprecate current verification steps and put them up here in more organized fashion.
     # ^^^ After the algorithms work..!s
 
-    #BIG IDEA: IF CHECKING X FIRST FOR SELF DETECTION, AND THAT FAILS THEN DO Y. INSTEAD OF RANDOM MOVE AFTER X.......... THEY SHOULD BE FALLBACKS OF EACHOTHER
     if(snake_len <= optimal_size or data['you']['health'] < 50):
         for i in range(len(food)):
             if move_to_food(food[i], snake):
-                return move_response(move_to_food(food[i], snake))
+                return move_response(verify(snake, move_to_food(food[i], snake)))
     elif(random.randint(0, 100) > 95):
         print("bog lottery winnnner")
         print("verify random")
@@ -118,7 +117,7 @@ def move():
                 return move_response(move_to_food(food[i], snake))
 
     print("verify random")
-    return move_response(snake, random.choice(directions))
+    return move_response(random.choice(directions))
 
 @bottle.post('/end')
 def end():
@@ -377,11 +376,7 @@ def decide_direction_self(snake):
     avg_snake = [0, 0]
     snake_len = len(snake)
 
-    #CHECK WHICH QUADRANT IT'S IN, THEN MOVE AWAY FROM AVG SNAKE LOCATION BASED ON THAT ./
-    #prioritize if x or y is returned first based on the bigger of head_location - avg_snake(*-1 if <0 no biggy),
-    # then determine what quadrant the average is in, and move BASED ON THIS INFO. Will be a lot but should improve this algorithm.
-    # i.e if y is bigger, head is in bottom left, avgY is in top left, then you would probably want to go down. If this is false,
-    # Then it can do the X one;!
+    # TO DO: IF FIRST OPTION AND FALLBACK OPTION FAIL: VERIFY THE NEXT MOVE VIA IT'S ABILITY TO MOVE AFTER THAT MOVE. AVOID THE 1 BLOCK KILLER
     for i in range(snake_len):
         avg_snake[0] += snake[i]['x'] 
         avg_snake[1] += snake[i]['y']
