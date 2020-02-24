@@ -7,7 +7,7 @@ from api import ping_response, start_response, move_response, end_response
 
 height = 0
 width = 0
-optimal_size = 6
+optimal_size = 3
 
 @bottle.route('/')
 def index():
@@ -48,8 +48,8 @@ def start():
     """
     print(json.dumps(data))
 
-    color = "#1E86C1"
-    headType = "bendr"
+    color = "#800020"
+    headType = "regular"
     tailType = "bwc-ice-skate"
 
     return start_response(color, headType, tailType)
@@ -85,7 +85,8 @@ def move():
     food_list = data['board']['food']
     opponents = data['board']['snakes']
 
-    closest_opponent = get_closest_opponent(opponents, head)
+    closest_opponent = get_closest_opponent(opponents, snake)
+    print("CLOSEST GUYS IN ORDER:", closest_opponent)
     closest_food = get_closest_food(food_list, head)
     food = closest_food
 
@@ -96,7 +97,7 @@ def move():
     # Try and deprecate current verification steps and put them up here in more organized fashion.
     # ^^^ After the algorithms work..!s
 
-    if(snake_len <= optimal_size or data['you']['health'] < 50):
+    if(snake_len <= optimal_size or data['you']['health'] < 20):
         for i in range(len(food)):
             if move_to_food(food[i], snake):
                 return move_response(verify(snake, move_to_food(food[i], snake)))
@@ -467,16 +468,30 @@ def y_first(snake, avg_snake, buff):
 # Returns: Sorted list of steps to an opponent. Order is closest to furthest.
 def get_closest_opponent(opponents, snake):
     opp_amount = len(opponents)
-    snake_loc = (snake['x'], snake['y'])
+    snake_len = len(snake)
+    head = snake[0]
+    snake_loc = (head['x'], head['y'])
     opp_loc = []
     curr_size = 0
+    opponent_size = 0
     for i in range(opp_amount):
         curr_size = len(opponents[i]['body'])
         for j in range(curr_size):
             x, y = opponents[i]['body'][j]['x'], opponents[i]['body'][j]['y']
             opp_loc.append((x, y))
+            opponent_size += 1
+    # opponent_size -= snake_len
+    # i, j = 0
+    # for i in range(opponent_size):
+    #     for j in range(snake_len):
+    #         if ((snake[j]['x'] == opp_loc[i]['x']) and (snake[j]['y'] == opp_loc[i]['y'])):
+    #             del opp_loc[i]
+                
     print("OPPONENTS @", opp_loc)
-    closest_opp = [((snake_loc[0]-opp_loc[i][0]), (snake_loc[1]-food_loc[i][1])) for i in range(size)]
+    closest_opp = [((snake_loc[0]-opp_loc[i][0]), (snake_loc[1]-opp_loc[i][1])) for i in range(opponent_size)]
+    print("to be sorted:", closest_opp)
+
+    return sorted(closest_opp, key = add_coord)
     
 
 # get_closest_food
@@ -492,7 +507,7 @@ def get_closest_food(food, snake):
         #todo
     closest_food = [((snake_loc[0]-food_loc[i][0]), (snake_loc[1]-food_loc[i][1])) for i in range(size)]
 
-    return sorted(closest_food, key  = add_coord)
+    return sorted(closest_food, key = add_coord)
 
 # add_coord
 # Parameters: Tuple with 2 elements.
