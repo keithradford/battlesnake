@@ -480,16 +480,15 @@ def get_closest_opponent(opponents, snake):
             x, y = opponents[i]['body'][j]['x'], opponents[i]['body'][j]['y']
             opp_loc.append((x, y))
             opponent_size += 1
-    # opponent_size -= snake_len
+    opponent_size -= snake_len
     # i, j = 0
     # for i in range(opponent_size):
     #     for j in range(snake_len):
     #         if ((snake[j]['x'] == opp_loc[i]['x']) and (snake[j]['y'] == opp_loc[i]['y'])):
     #             del opp_loc[i]
-                
-    print("OPPONENTS @", opp_loc)
-    closest_opp = [((snake_loc[0]-opp_loc[i][0]), (snake_loc[1]-opp_loc[i][1])) for i in range(opponent_size)]
-    print("to be sorted:", closest_opp)
+    i = 0 
+    enemy = [coord for coord in opp_loc if coord not in [(snake[i]['x'], snake[i]['y']) for i in range(snake_len)]]
+    closest_opp = [((snake_loc[0]-enemy[i][0]), (snake_loc[1]-enemy[i][1])) for i in range(opponent_size)]
 
     return sorted(closest_opp, key = add_coord)
     
