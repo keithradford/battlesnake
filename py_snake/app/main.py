@@ -60,6 +60,7 @@ def move():
     global height
     global width
     global optimal_size
+    global opp_head
 
     data = bottle.request.json
 
@@ -90,6 +91,7 @@ def move():
     print(opp_list)
     print("Opponents relative to me", closest_opponent)
     food = get_closest_food(food_list, head)
+    opp_head = opponents_heads(opponents, snake)
 
     move = up
 
@@ -266,9 +268,15 @@ def verify(snake, move, opponents):
 # Will add verification of turning into other snakes.
 # If all tests pass, return True.
 def verify_move(move, snake, h, w, opponents):
+    global opp_head
     head = snake[0]
     snake_len = len(snake)
     opp_len = len(opponents)
+    print("ASFADFDAFDAFADFDAFSDFDS____________________________", opp_head)
+    # possible_x = [x + 1 for x in opp_head[0][0]]
+    # possible_x.extend([x - 1 for x in opp_head[0][0]])
+    # possible_y = [y + 1 for y in opp_head[0][1]]
+    # possible_y.extend([y - 1 for y in opp_head[0][1]])                fix
 
     if(move == 'left'):
         left_move = head.copy()
@@ -277,7 +285,9 @@ def verify_move(move, snake, h, w, opponents):
             # print("almost collided with wall, left")
             return False
         for j in range(opp_len):  #opponent
-            if(left_move['x'] == opponents[j][0] and left_move['y'] == opponents[j][1]):
+            possible_x.append(opponents[j][0])
+            possible_y.append(opponents[j][1])
+            if(left_move['x'] in possible_x and left_move['y'] in possible_y):
                 print("Almost collide with somebody else")
                 return False
         for i in range(snake_len):  #body
@@ -293,7 +303,9 @@ def verify_move(move, snake, h, w, opponents):
             # print("almost collided with wall, right")
             return False
         for j in range(opp_len):  #opponent
-            if(right_move['x'] == opponents[j][0] and right_move['y'] == opponents[j][1]):
+            possible_x.append(opponents[j][0])
+            possible_y.append(opponents[j][1])
+            if(right_move['x'] in possible_x and right_move['y'] in possible_y):
                 print("Almost collide with somebody else")
                 return False
         for i in range(snake_len):  #body
@@ -309,7 +321,9 @@ def verify_move(move, snake, h, w, opponents):
             # print("almost collided with wall, up")
             return False
         for j in range(opp_len):  #opponent
-            if(up_move['x'] == opponents[j][0] and up_move['y'] == opponents[j][1]):
+            possible_x.append(opponents[j][0])
+            possible_y.append(opponents[j][1])
+            if(up_move['x'] in possible_x and up_move['y'] in possible_y):
                 print("Almost collide with somebody else")
                 return False
         for i in range(snake_len):  #body
@@ -325,7 +339,9 @@ def verify_move(move, snake, h, w, opponents):
             # print("almost collided with wall, down")
             return False
         for j in range(opp_len):  #opponent
-            if(down_move['x'] == opponents[j][0] and down_move['y'] == opponents[j][1]):
+            possible_x.append(opponents[j][0])
+            possible_y.append(opponents[j][1])
+            if(down_move['x'] in possible_x and down_move['y'] in possible_y):
                 print("Almost collide with somebody else")
                 return False
         for i in range(snake_len):  #body
@@ -496,6 +512,22 @@ def sanitize_opponents(opponents, snake):
         for i in range(snake_len)]
     ]
     return to_ret
+
+def opponents_heads(opponents, snake):
+    opp_amount = len(opponents)
+    snake_len = len(snake)
+    head = snake[0]
+    snake_loc = (head['x'], head['y'])
+    opp_loc = []
+    for i in range(opp_amount):
+        x, y = opponents[i]['body'][0]['x'], opponents[i]['body'][0]['y']
+        opp_loc.append((x, y))
+    heads = [
+        coord for coord in opp_loc 
+        if coord not in [(snake[i]['x'], snake[i]['y']) 
+        for i in range(snake_len)]
+    ]
+    return heads
 
 # get_closest_opponent
 # Parameters: List of opponents, snake head coordinates
