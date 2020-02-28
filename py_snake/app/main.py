@@ -278,6 +278,8 @@ def verify_move(move, snake, h, w, opponents):
     possible_y = [opp_head[i][1] + 1 for i in range(len(opp_head))]
     possible_y.extend([opp_head[i][1] - 1 for i in range(len(opp_head))])
     possible = None
+    # Rather make a list of coordinates of all the possible positions the head can be so don't  have to zip them together down the line.
+    
     # print("X", possible_x, "Y", possible_y)
 
     if(move == 'left'):
