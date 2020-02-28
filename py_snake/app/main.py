@@ -88,8 +88,8 @@ def move():
 
     closest_opponent = get_closest_opponent(opponents, snake)
     opp_list = sanitize_opponents(opponents, snake)
-    print(opp_list)
-    print("Opponents relative to me", closest_opponent)
+    # print(opp_list)
+    # print("Opponents relative to me", closest_opponent)
     food = get_closest_food(food_list, head)
     opp_head = opponents_heads(opponents, snake)
 
@@ -105,24 +105,24 @@ def move():
             if move_to_food(food[i], snake, opp_list):
                 return move_response(verify(snake, move_to_food(food[i], snake, opp_list), opp_list))
     elif(random.randint(0, 100) > 95):
-        print("bog lottery winnnner")
-        print("verify random")
+        # print("bog lottery winnnner")
+        # print("verify random")
         return move_response(verify(snake, random.choice(directions), opp_list))
     elif(verify(snake, decide_direction_self(snake, opp_list), opp_list) != False):
-        print("I'm already pretty big, I don' tneed food. Let me move away from myself")
-        print("verify self")
+        # print("I'm already pretty big, I don' tneed food. Let me move away from myself")
+        # print("verify self")
         return move_response(verify(snake, decide_direction_self(snake, opp_list), opp_list))
     elif(verify(snake, decide_direction_wall(snake, 0), opp_list) != False):
-        print("I'm already pretty big, I don' tneed food. Let me move away from the wall")
-        print("verify wall")
+        # print("I'm already pretty big, I don' tneed food. Let me move away from the wall")
+        # print("verify wall")
         return move_response(verify(snake, decide_direction_wall(snake, 0), opp_list))
     else:
-        print("got nothing go for food")
+        # print("got nothing go for food")
         for i in range(len(food)):
             if move_to_food(food[i], snake, opp_list):
                 return move_response(move_to_food(food[i], snake, opp_list))
 
-    print("verify random")
+    # print("verify random")
     return move_response(random.choice(directions))
 
 @bottle.post('/end')
@@ -143,19 +143,19 @@ def move_away_from_opp(opponents, snake):
 def move_to_food(food, snake, opponents):
     if(food[0] > 0):
         while(food[0] > 0):
-            print("verify left")
+            # print("verify left")
             return verify(snake, 'left', opponents)
     elif(food[0] < 0):
         while(food[0] < 0):
-            print("verify right")
+            # print("verify right")
             return verify(snake, 'right', opponents)
     if(food[1] > 0):
         while(food[1] > 0):
-            print("verify up")
+            # print("verify up")
             return verify(snake, 'up', opponents)
     elif(food[1] < 0):
         while(food[1] < 0):
-            print("verify down")
+            # print("verify down")
             return verify(snake, 'down', opponents)  
 
 # verify (possibly rename to better fit it's function)
@@ -173,20 +173,20 @@ def verify(snake, move, opponents):
     global height
     global width
 
-    print("I WANT TO MOVE:", move)
+    # print("I WANT TO MOVE:", move)
 
     if(move == 'left'):
         if(verify_move('left', snake, height, width, opponents) == True):
-            print("TURN TO FOOD", snake[0]['x'], snake[0]['y'])
+            # print("TURN TO FOOD", snake[0]['x'], snake[0]['y'])
             return 'left'
         elif(decide_direction_self(snake, opponents) != False and verify_move(decide_direction_self(snake, opponents), snake, height, width, opponents) == True):
-            print("MOVE AWAY FROM SELF", snake[0]['x'], snake[0]['y'])
+            # print("MOVE AWAY FROM SELF", snake[0]['x'], snake[0]['y'])
             return decide_direction_self(snake, opponents)
         elif(decide_direction_wall(snake, 0) != False and verify_move(decide_direction_wall(snake, 0), snake, height, width, opponents) == True):
-            print("TRYING TO MOVE AWAY FROM WALL", snake[0]['x'], snake[0]['y'])
+            # print("TRYING TO MOVE AWAY FROM WALL", snake[0]['x'], snake[0]['y'])
             return decide_direction_wall(snake, 0)
         elif(decide_direction_wall(snake, 1) != False and verify_move(decide_direction_wall(snake, 1), snake, height, width, opponents) == True):
-            print("TRYING TO MOVE AWAY FROM WALL", snake[0]['x'], snake[0]['y'])
+            # print("TRYING TO MOVE AWAY FROM WALL", snake[0]['x'], snake[0]['y'])
             return decide_direction_wall(snake, 1)
 
         elif(move == 'left' and verify_move('right', snake, height, width, opponents) == True):
@@ -198,16 +198,16 @@ def verify(snake, move, opponents):
 
     elif(move == 'right'):
         if(verify_move('right', snake, height, width, opponents) == True):
-            print("TURN TO FOOD", snake[0]['x'], snake[0]['y'])
+            # print("TURN TO FOOD", snake[0]['x'], snake[0]['y'])
             return 'right'
         elif(decide_direction_self(snake, opponents) != False and verify_move(decide_direction_self(snake, opponents), snake, height, width, opponents) == True):
-            print("MOVE AWAY FROM SELF", snake[0]['x'], snake[0]['y'])
+            # print("MOVE AWAY FROM SELF", snake[0]['x'], snake[0]['y'])
             return decide_direction_self(snake, opponents)
         elif(decide_direction_wall(snake, 0) != False and verify_move(decide_direction_wall(snake, 0), snake, height, width, opponents) == True):
-            print("TRYING TO MOVE AWAY FROM WALL", snake[0]['x'], snake[0]['y'])
+            # print("TRYING TO MOVE AWAY FROM WALL", snake[0]['x'], snake[0]['y'])
             return decide_direction_wall(snake, 0)
         elif(decide_direction_wall(snake, 1) != False and verify_move(decide_direction_wall(snake, 1), snake, height, width, opponents) == True):
-            print("TRYING TO MOVE AWAY FROM WALL", snake[0]['x'], snake[0]['y'])
+            # print("TRYING TO MOVE AWAY FROM WALL", snake[0]['x'], snake[0]['y'])
             return decide_direction_wall(snake, 1)
 
         elif(move == 'right' and verify_move('left', snake, height, width, opponents) == True):
@@ -219,16 +219,16 @@ def verify(snake, move, opponents):
 
     elif(move == 'up'):
         if(verify_move('up', snake, height, width, opponents) == True):
-            print("TURN TO FOOD", snake[0]['x'], snake[0]['y'])
+            # print("TURN TO FOOD", snake[0]['x'], snake[0]['y'])
             return 'up'
         elif(decide_direction_self(snake, opponents) != False and verify_move(decide_direction_self(snake, opponents), snake, height, width, opponents) == True):
             print("MOVE AWAY FROM SELF", snake[0]['x'], snake[0]['y'])
-            return decide_direction_self(snake, opponents)
+            # return decide_direction_self(snake, opponents)
         elif(decide_direction_wall(snake, 0) != False and verify_move(decide_direction_wall(snake, 0), snake, height, width, opponents) == True):
-            print("TRYING TO MOVE AWAY FROM WALL", snake[0]['x'], snake[0]['y'])
+            # print("TRYING TO MOVE AWAY FROM WALL", snake[0]['x'], snake[0]['y'])
             return decide_direction_wall(snake, 0)
         elif(decide_direction_wall(snake, 1) != False and verify_move(decide_direction_wall(snake, 1), snake, height, width, opponents) == True):
-            print("TRYING TO MOVE AWAY FROM WALL", snake[0]['x'], snake[0]['y'])
+            # print("TRYING TO MOVE AWAY FROM WALL", snake[0]['x'], snake[0]['y'])
             return decide_direction_wall(snake, 1)
 
         elif(move == 'up' and verify_move('right', snake, height, width, opponents) == True):
@@ -240,16 +240,16 @@ def verify(snake, move, opponents):
 
     elif(move == 'down'):
         if(verify_move('down', snake, height, width, opponents) == True):
-            print("TURN TO FOOD", snake[0]['x'], snake[0]['y'])
+            # print("TURN TO FOOD", snake[0]['x'], snake[0]['y'])
             return 'down'
         elif(decide_direction_self(snake, opponents) != False and verify_move(decide_direction_self(snake, opponents), snake, height, width, opponents) == True):
-            print("MOVE AWAY FROM SELF", snake[0]['x'], snake[0]['y'])
+            # print("MOVE AWAY FROM SELF", snake[0]['x'], snake[0]['y'])
             return decide_direction_self(snake, opponents)
         elif(decide_direction_wall(snake, 0) != False and verify_move(decide_direction_wall(snake, 0), snake, height, width, opponents) == True):
-            print("TRYING TO MOVE AWAY FROM WALL", snake[0]['x'], snake[0]['y'])
+            # print("TRYING TO MOVE AWAY FROM WALL", snake[0]['x'], snake[0]['y'])
             return decide_direction_wall(snake, 0)
         elif(decide_direction_wall(snake, 1) != False and verify_move(decide_direction_wall(snake, 1), snake, height, width, opponents) == True):
-            print("TRYING TO MOVE AWAY FROM WALL", snake[0]['x'], snake[0]['y'])
+            # print("TRYING TO MOVE AWAY FROM WALL", snake[0]['x'], snake[0]['y'])
             return decide_direction_wall(snake, 1)
 
         elif(move == 'down' and verify_move('right', snake, height, width, opponents) == True):
@@ -269,14 +269,16 @@ def verify(snake, move, opponents):
 # If all tests pass, return True.
 def verify_move(move, snake, h, w, opponents):
     global opp_head
+    print(opp_head[0][0])
     head = snake[0]
     snake_len = len(snake)
     opp_len = len(opponents)
-    print("ASFADFDAFDAFADFDAFSDFDS____________________________", opp_head)
-    # possible_x = [x + 1 for x in opp_head[0][0]]
-    # possible_x.extend([x - 1 for x in opp_head[0][0]])
-    # possible_y = [y + 1 for y in opp_head[0][1]]
-    # possible_y.extend([y - 1 for y in opp_head[0][1]])                fix
+    possible_x = [opp_head[i][0] + 1 for i in range(len(opp_head))]
+    possible_x.extend([opp_head[i][0] - 1 for i in range(len(opp_head))])
+    possible_y = [opp_head[i][1] + 1 for i in range(len(opp_head))]
+    possible_y.extend([opp_head[i][1] - 1 for i in range(len(opp_head))])
+    possible = None
+    # print("X", possible_x, "Y", possible_y)
 
     if(move == 'left'):
         left_move = head.copy()
@@ -287,8 +289,9 @@ def verify_move(move, snake, h, w, opponents):
         for j in range(opp_len):  #opponent
             possible_x.append(opponents[j][0])
             possible_y.append(opponents[j][1])
-            if(left_move['x'] in possible_x and left_move['y'] in possible_y):
-                print("Almost collide with somebody else")
+            possible = list(zip(possible_x, possible_y))
+            print("X", possible_x, "Y", possible_y)
+            if(left_move in possible):
                 return False
         for i in range(snake_len):  #body
             if(left_move == snake[i]):
@@ -305,8 +308,10 @@ def verify_move(move, snake, h, w, opponents):
         for j in range(opp_len):  #opponent
             possible_x.append(opponents[j][0])
             possible_y.append(opponents[j][1])
-            if(right_move['x'] in possible_x and right_move['y'] in possible_y):
-                print("Almost collide with somebody else")
+            possible = list(zip(possible_x, possible_y))
+            print("X", possible_x, "Y", possible_y)
+            if(right_move in possible):
+                # print("Almost collide with somebody else")
                 return False
         for i in range(snake_len):  #body
             if(right_move == snake[i]):
@@ -323,8 +328,10 @@ def verify_move(move, snake, h, w, opponents):
         for j in range(opp_len):  #opponent
             possible_x.append(opponents[j][0])
             possible_y.append(opponents[j][1])
-            if(up_move['x'] in possible_x and up_move['y'] in possible_y):
-                print("Almost collide with somebody else")
+            possible = list(zip(possible_x, possible_y))
+            print("X", possible_x, "Y", possible_y)
+            if(up_move in possible):
+                # print("Almost collide with somebody else")
                 return False
         for i in range(snake_len):  #body
             if(up_move == snake[i]):
@@ -341,8 +348,10 @@ def verify_move(move, snake, h, w, opponents):
         for j in range(opp_len):  #opponent
             possible_x.append(opponents[j][0])
             possible_y.append(opponents[j][1])
-            if(down_move['x'] in possible_x and down_move['y'] in possible_y):
-                print("Almost collide with somebody else")
+            possible = list(zip(possible_x, possible_y))
+            print("X", possible_x, "Y", possible_y)
+            if(down_move in possible):
+                # print("Almost collide with somebody else")
                 return False
         for i in range(snake_len):  #body
             if(down_move == snake[i]):
@@ -429,12 +438,12 @@ def decide_direction_self(snake, opponents):
     if(check_x > check_y and snake_len > optimal_size and x_first(snake, avg_snake, buff, opponents) != False and verify_move(x_first(snake, avg_snake, buff, opponents), snake, height, width, opponents) == True):
         return x_first(snake, avg_snake, buff, opponents)
     elif(check_x > check_y and snake_len > optimal_size and y_first(snake, avg_snake, buff, opponents) != False and verify_move(y_first(snake, avg_snake, buff, opponents), snake, height, width, opponents) == True):
-        print('go to y now')
+        # print('go to y now')
         return y_first(snake, avg_snake, buff, opponents)
     elif(check_y > check_x and snake_len > optimal_size and y_first(snake, avg_snake, buff, opponents) != False and verify_move(y_first(snake, avg_snake, buff, opponents), snake, height, width, opponents) == True):
         return y_first(snake, avg_snake, buff, opponents)
     elif(check_y > check_x and snake_len > optimal_size and x_first(snake, avg_snake, buff, opponents) != False and verify_move(x_first(snake, avg_snake, buff, opponents), snake, height, width, opponents) == True):
-        print('go to x now')
+        # print('go to x now')
         return x_first(snake, avg_snake, buff, opponents)
 
     return False
@@ -448,22 +457,22 @@ def x_first(snake, avg_snake, buff, opponents):
 
     print("Doing X first")
     if(avg_snake[0] >= width/2 and avg_snake[1] >= height/2): #bottom right
-        print("bottom right")
+        # print("bottom right")
         if(head['x'] > avg_snake[0] - buff and verify_move('left', snake, height, width, opponents) == True):
             return 'left'
     elif(avg_snake[0] >= width/2 and avg_snake[1] <= height/2): #top right
-        print("top right")
+        # print("top right")
         if(head['x'] > avg_snake[0] - buff and verify_move('left', snake, height, width, opponents) == True):
             return 'left'
     elif(avg_snake[0] <= width/2 and avg_snake[1] >= height/2 and verify_move('right', snake, height, width, opponents) == True): #bottom left
-        print("bottom left")
+        # print("bottom left")
         if(head['x'] < avg_snake[0] + buff): 
             return 'right'
     elif(avg_snake[0] <= width/2 and avg_snake[1] <= height/2 and verify_move('right', snake, height, width, opponents) == True): #top left
-        print("top left")
+        # print("top left")
         if(head['x'] < avg_snake[0] + buff):
             return 'right'
-    print('in x false next')
+    # print('in x false next')
 
     return False
 
@@ -475,22 +484,22 @@ def y_first(snake, avg_snake, buff, opponents):
 
     print("Doing Y first")
     if(avg_snake[0] >= width/2 and avg_snake[1] >= height/2 and verify_move('up', snake, height, width, opponents) == True): #bottom right
-        print("bottom right")
+        # print("bottom right")
         if(head['y'] > avg_snake[1] - buff):
             return 'up'
     elif(avg_snake[0] >= width/2 and avg_snake[1] <= height/2 and verify_move('down', snake, height, width, opponents) == True): #top right
-        print("top right")
+        # print("top right")
         if(head['y'] < avg_snake[1] + buff):
             return 'down'
     elif(avg_snake[0] <= width/2 and avg_snake[1] >= height/2 and verify_move('up', snake, height, width, opponents) == True): #bottom left
-        print("bottom left")
+        # print("bottom left")
         if(head['y'] > avg_snake[1] - buff):
             return 'up'
     elif(avg_snake[0] <= width/2 and avg_snake[1] <= height/2 and verify_move('down', snake, height, width, opponents) == True): #top left
-        print("top left")
+        # print("top left")
         if(head['y'] < avg_snake[1] + buff):
             return 'down'
-    print('in y false next')
+    # print('in y false next')
 
     return False
 
