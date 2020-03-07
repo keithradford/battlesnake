@@ -48,7 +48,7 @@ def start():
     """
     print(json.dumps(data))
 
-    color = "#800020"
+    color = "#f"
     headType = "regular"
     tailType = "bwc-ice-skate"
 
@@ -61,6 +61,7 @@ def move():
     global width
     global optimal_size
     global opp_head
+    global name
 
     data = bottle.request.json
 
@@ -69,8 +70,9 @@ def move():
             snake AI must choose a direction to move in.
     """
     # print(json.dumps(data))
-    print(data['turn'])
+    print("TURN#", data['turn'])
 
+    name = data['you']['name']
     directions = ['up', 'down', 'left', 'right']
     direction = directions[1]
     up = directions[0]
@@ -85,7 +87,7 @@ def move():
     width = data['board']['width']
     food_list = data['board']['food']
     opponents = data['board']['snakes']
-
+ 
     closest_opponent = get_closest_opponent(opponents, snake)
     opp_list = sanitize_opponents(opponents, snake)
     # print(opp_list)
@@ -269,96 +271,60 @@ def verify(snake, move, opponents):
 # If all tests pass, return True.
 def verify_move(move, snake, h, w, opponents):
     global opp_head
+    global name
+    possible_x = {}
+    possible_y = {}
     print(opp_head[0][0])
     head = snake[0]
     snake_len = len(snake)
     opp_len = len(opponents)
-    possible_x = [opp_head[i][0] + 1 for i in range(len(opp_head))]
-    possible_x.extend([opp_head[i][0] - 1 for i in range(len(opp_head))])
-    possible_y = [opp_head[i][1] + 1 for i in range(len(opp_head))]
-    possible_y.extend([opp_head[i][1] - 1 for i in range(len(opp_head))])
-    possible = None
+    possible = []
+    i = 0
+    possible.extend([{'x':opp_head[i][0], 'y':opp_head[i][1] + 1} for i in range(len(opp_head))])#up
+    i = 0
+    possible.extend([{'x':opp_head[i][0], 'y':opp_head[i][1] - 1} for i in range(len(opp_head))])#down
+    i = 0
+    possible.extend([{'x':opp_head[i][0] - 1, 'y':opp_head[i][1]} for i in range(len(opp_head))])#left
+    i = 0
+    possible.extend([{'x':opp_head[i][0] + 1, 'y':opp_head[i][1]} for i in range(len(opp_head))])#right
+    print("POSSIBLE HEADS", possible, name)
     # Rather make a list of coordinates of all the possible positions the head can be so don't  have to zip them together down the line.
     
     # print("X", possible_x, "Y", possible_y)
+    for j in range(opp_len):  #opponent
+        possible.append({'x': opponents[j][0], 'y': opponents[j][1]})
+    print("POSSIBLE", possible, name)
 
     if(move == 'left'):
         left_move = head.copy()
         left_move['x'] -= 1
-        if(left_move['x'] == -1):   #wall
-            # print("almost collided with wall, left")
+        print("try to move:", left_move)
+        if(left_move['x'] == -1 or left_move in possible or left_move in snake):
             return False
-        for j in range(opp_len):  #opponent
-            possible_x.append(opponents[j][0])
-            possible_y.append(opponents[j][1])
-            possible = list(zip(possible_x, possible_y))
-            print("X", possible_x, "Y", possible_y)
-            if(left_move in possible):
-                return False
-        for i in range(snake_len):  #body
-            if(left_move == snake[i]):
-                # print("almost collided with self, left", left_move, snake[i])
-                return False
         return True
 
     elif(move == 'right'):
         right_move = head.copy()
         right_move['x'] += 1
-        if(right_move['x'] == w):   #wall
-            # print("almost collided with wall, right")
-            return False
-        for j in range(opp_len):  #opponent
-            possible_x.append(opponents[j][0])
-            possible_y.append(opponents[j][1])
-            possible = list(zip(possible_x, possible_y))
-            print("X", possible_x, "Y", possible_y)
-            if(right_move in possible):
-                # print("Almost collide with somebody else")
-                return False
-        for i in range(snake_len):  #body
-            if(right_move == snake[i]):
-                # print("almost collided with self, right", right_move, snake[i])
-                return False
+        print("try to move:", right_move)
+        if(right_move['x'] == w or right_move in possible or right_move in snake):
+            return False 
         return True
 
     elif(move == 'up'):
         up_move = head.copy()
         up_move['y'] -= 1
-        if(up_move['y'] == -1):   #wall
-            # print("almost collided with wall, up")
+        print("try to move:", up_move)
+        if(up_move['y'] == -1 or up_move in possible or up_move in snake):
             return False
-        for j in range(opp_len):  #opponent
-            possible_x.append(opponents[j][0])
-            possible_y.append(opponents[j][1])
-            possible = list(zip(possible_x, possible_y))
-            print("X", possible_x, "Y", possible_y)
-            if(up_move in possible):
-                # print("Almost collide with somebody else")
-                return False
-        for i in range(snake_len):  #body
-            if(up_move == snake[i]):
-                # print("almost collided with self, up", up_move, snake[i])
-                return False
         return True
     
     elif(move == 'down'):
         down_move = head.copy()
         down_move['y'] += 1
-        if(down_move['y'] == h):   #wall
-            # print("almost collided with wall, down")
+        print("try to move:", down_move)
+        if(down_move['y'] == h or down_move in possible or down_move in snake):
             return False
-        for j in range(opp_len):  #opponent
-            possible_x.append(opponents[j][0])
-            possible_y.append(opponents[j][1])
-            possible = list(zip(possible_x, possible_y))
-            print("X", possible_x, "Y", possible_y)
-            if(down_move in possible):
-                # print("Almost collide with somebody else")
-                return False
-        for i in range(snake_len):  #body
-            if(down_move == snake[i]):
-                # print("almost collided with self, down", down_move, snake[i])
-                return False
         return True
 
 # decide_direction_wall
