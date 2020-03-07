@@ -85,7 +85,7 @@ def move():
     food_list = data['board']['food']
     opponents = data['board']['snakes']
 
-    closest_opponent = get_closest_opponent(opponents, head)
+    # closest_opponent = get_closest_opponent(opponents, head)
     closest_food = get_closest_food(food_list, head)
     food = closest_food
 
