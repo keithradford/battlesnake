@@ -48,9 +48,9 @@ def start():
     """
     print(json.dumps(data))
 
-    color = "#f"
-    headType = "regular"
-    tailType = "bwc-ice-skate"
+    color = "#"
+    headType = "bwc-bonhomme"
+    tailType = "skinny"
 
     return start_response(color, headType, tailType)
 
