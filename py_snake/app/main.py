@@ -238,6 +238,7 @@ def verify_move(move, snake, h, w, opponents):
     possible_x = {}
     possible_y = {}
     possible = []
+    tmp = []
     head = snake[0]
     snake_len = len(snake)
     opp_len = len(opponents)
@@ -250,6 +251,13 @@ def verify_move(move, snake, h, w, opponents):
     # Get coordinates of opponents bodies
     for j in range(opp_len):
         possible.append({'x': opponents[j][0], 'y': opponents[j][1]})
+        tmp.append({'x': opponents[j][0], 'y': opponents[j][1]})
+    print("TEMP:", tmp)
+
+    # When the only possible move is a possible location for an opponent, need to go here.
+    # Potential soluiton: Add function which checks the three possible turns, returns int.
+    # If returns 1 and in the situation mentioned, return true.
+    # Potentially can make it go to where the tail was - could account for possible food eating of opponent cause then tail would stay the same.
 
     if(move == 'left'):
         left_move = head.copy()
@@ -278,6 +286,11 @@ def verify_move(move, snake, h, w, opponents):
         if(down_move['y'] == h or down_move in possible or down_move in snake):
             return False
         return True
+
+def possible_turns(snake, opponents):
+    head = snake[0]
+    possible = []
+    return 0
 
 # decide_direction_wall
 # Parameters: Coordinates of self
