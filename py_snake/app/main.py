@@ -62,13 +62,15 @@ def move():
     global optimal_size
     global opp_head
     global name
+    global opp
 
     data = bottle.request.json
 
     # print(json.dumps(data))
-    print("TURN #", data['turn'])
+    # print("TURN #", data['turn'])
 
     name = data['you']['name']
+    print("TURN #", data['turn'], name)
     directions = ['up', 'down', 'left', 'right']
     direction = directions[1]
     up = directions[0]
@@ -83,6 +85,7 @@ def move():
     width = data['board']['width']
     food_list = data['board']['food']
     opponents = data['board']['snakes']
+    opp = opponents
  
     closest_opponent = get_closest_opponent(opponents, snake)
     opp_list = sanitize_opponents(opponents, snake)
@@ -234,6 +237,7 @@ def verify(snake, move, opponents):
 def verify_move(move, snake, h, w, opponents):
     global opp_head
     global name
+    global opp
 
     possible_x = {}
     possible_y = {}
@@ -252,7 +256,6 @@ def verify_move(move, snake, h, w, opponents):
     for j in range(opp_len):
         possible.append({'x': opponents[j][0], 'y': opponents[j][1]})
         tmp.append({'x': opponents[j][0], 'y': opponents[j][1]})
-    print("TEMP:", tmp)
 
     # When the only possible move is a possible location for an opponent, need to go here.
     # Potential soluiton: Add function which checks the three possible turns, returns int.
@@ -263,6 +266,8 @@ def verify_move(move, snake, h, w, opponents):
         left_move = head.copy()
         left_move['x'] -= 1
         if(left_move['x'] == -1 or left_move in possible or left_move in snake):
+            if(left_move in possible and possible_turns(snake, opp) == 1 and left_move not in tmp):
+                return True
             return False
         return True
 
@@ -270,6 +275,8 @@ def verify_move(move, snake, h, w, opponents):
         right_move = head.copy()
         right_move['x'] += 1
         if(right_move['x'] == w or right_move in possible or right_move in snake):
+            if(right_move in possible and possible_turns(snake, opp) == 1 and right_move not in tmp):
+                return True
             return False 
         return True
 
@@ -277,6 +284,8 @@ def verify_move(move, snake, h, w, opponents):
         up_move = head.copy()
         up_move['y'] -= 1
         if(up_move['y'] == -1 or up_move in possible or up_move in snake):
+            if(up_move in possible and possible_turns(snake, opp) == 1 and up_move not in tmp):
+                return True
             return False
         return True
     
@@ -284,13 +293,36 @@ def verify_move(move, snake, h, w, opponents):
         down_move = head.copy()
         down_move['y'] += 1
         if(down_move['y'] == h or down_move in possible or down_move in snake):
+            if(down_move in possible and possible_turns(snake, opp) == 1 and down_move not in tmp):
+                return True
             return False
         return True
 
 def possible_turns(snake, opponents):
+    global height
+    global width
+
+    cnt = 4
     head = snake[0]
+    opp_len = len(opponents)
+    opponent_tmp = [opponents[i]['body'] for i in range(opp_len)]
+    opponent_dict = [item for sublist in opponent_tmp for item in sublist]
     possible = []
-    return 0
+    possible.extend([{'x':head['x'], 'y':head['y'] + 1}]) # up
+    possible.extend([{'x':head['x'], 'y':head['y'] - 1}]) # down
+    possible.extend([{'x':head['x'] - 1, 'y':head['y']}]) # left
+    possible.extend([{'x':head['x'] + 1, 'y':head['y']}]) # right
+    for elmnt in possible:
+        if(elmnt['x'] == width or elmnt['x'] == -1):
+            cnt -= 1
+        elif(elmnt['y'] == height or elmnt['y'] == -1):
+            cnt -= 1
+        elif(elmnt in snake):
+            cnt -= 1
+        elif(elmnt in opponent_dict):
+            cnt -= 1
+    print("POSSIBLE TURNS:", cnt)
+    return cnt
 
 # decide_direction_wall
 # Parameters: Coordinates of self
