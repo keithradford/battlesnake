@@ -63,7 +63,6 @@ def move():
     global opp_head
     global name
     global opp
-    global shout
 
     data = bottle.request.json
 
@@ -78,8 +77,6 @@ def move():
     down = directions[1]
     left = directions[2]
     right = directions[3]
-
-    shout = data['you']['shout']
 
     head = data['you']['body'][0]
     snake = data['you']['body']
@@ -238,7 +235,6 @@ def verify_move(move, snake, h, w, opponents):
     global opp_head
     global name
     global opp
-    global shout
 
     possible_x = {}
     possible_y = {}
@@ -268,7 +264,6 @@ def verify_move(move, snake, h, w, opponents):
         left_move['x'] -= 1
         if(left_move['x'] == -1 or left_move in possible or left_move in snake):
             if(left_move in possible and possible_turns(snake, opp) == 1 and left_move not in tmp):
-                shout = 'sup'
                 return True
             return False
         return True
@@ -278,7 +273,6 @@ def verify_move(move, snake, h, w, opponents):
         right_move['x'] += 1
         if(right_move['x'] == w or right_move in possible or right_move in snake):
             if(right_move in possible and possible_turns(snake, opp) == 1 and right_move not in tmp):
-                shout = 'sup'
                 return True
             return False 
         return True
@@ -288,7 +282,6 @@ def verify_move(move, snake, h, w, opponents):
         up_move['y'] -= 1
         if(up_move['y'] == -1 or up_move in possible or up_move in snake):
             if(up_move in possible and possible_turns(snake, opp) == 1 and up_move not in tmp):
-                shout = 'sup'
                 return True
             return False
         return True
@@ -298,7 +291,6 @@ def verify_move(move, snake, h, w, opponents):
         down_move['y'] += 1
         if(down_move['y'] == h or down_move in possible or down_move in snake):
             if(down_move in possible and possible_turns(snake, opp) == 1 and down_move not in tmp):
-                shout = 'sup'
                 #while read line; do easy_install $line; done < requirements.txt
                 return True
             return False
