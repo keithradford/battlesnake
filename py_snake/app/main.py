@@ -7,7 +7,7 @@ from api import ping_response, start_response, move_response, end_response
 
 height = 0
 width = 0
-optimal_size = 3
+optimal_size = 8
 
 @bottle.route('/')
 def index():
