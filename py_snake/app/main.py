@@ -63,6 +63,7 @@ def move():
     global opp_head
     global name
     global opp
+    global shout
 
     data = bottle.request.json
 
@@ -77,6 +78,8 @@ def move():
     down = directions[1]
     left = directions[2]
     right = directions[3]
+
+    shout = data['you']['shout']
 
     head = data['you']['body'][0]
     snake = data['you']['body']
@@ -101,6 +104,7 @@ def move():
     # Else move away from the wall towards the middle
     # Else go to food
     # Last case: take a random move
+
     if(snake_len <= optimal_size or data['you']['health'] < 20):
         for i in range(len(food)):
             if move_to_food(food[i], snake, opp_list):
@@ -122,10 +126,6 @@ def move():
 def end():
     data = bottle.request.json
 
-    """
-    TODO: If your snake AI was stateful,
-        clean up any stateful objects here.
-    """
     print(json.dumps(data))
 
     return end_response()
@@ -238,6 +238,7 @@ def verify_move(move, snake, h, w, opponents):
     global opp_head
     global name
     global opp
+    global shout
 
     possible_x = {}
     possible_y = {}
@@ -267,6 +268,7 @@ def verify_move(move, snake, h, w, opponents):
         left_move['x'] -= 1
         if(left_move['x'] == -1 or left_move in possible or left_move in snake):
             if(left_move in possible and possible_turns(snake, opp) == 1 and left_move not in tmp):
+                shout = 'sup'
                 return True
             return False
         return True
@@ -276,6 +278,7 @@ def verify_move(move, snake, h, w, opponents):
         right_move['x'] += 1
         if(right_move['x'] == w or right_move in possible or right_move in snake):
             if(right_move in possible and possible_turns(snake, opp) == 1 and right_move not in tmp):
+                shout = 'sup'
                 return True
             return False 
         return True
@@ -285,6 +288,7 @@ def verify_move(move, snake, h, w, opponents):
         up_move['y'] -= 1
         if(up_move['y'] == -1 or up_move in possible or up_move in snake):
             if(up_move in possible and possible_turns(snake, opp) == 1 and up_move not in tmp):
+                shout = 'sup'
                 return True
             return False
         return True
@@ -294,6 +298,8 @@ def verify_move(move, snake, h, w, opponents):
         down_move['y'] += 1
         if(down_move['y'] == h or down_move in possible or down_move in snake):
             if(down_move in possible and possible_turns(snake, opp) == 1 and down_move not in tmp):
+                shout = 'sup'
+                #while read line; do easy_install $line; done < requirements.txt
                 return True
             return False
         return True
@@ -313,16 +319,27 @@ def possible_turns(snake, opponents):
     possible.extend([{'x':head['x'] - 1, 'y':head['y']}]) # left
     possible.extend([{'x':head['x'] + 1, 'y':head['y']}]) # right
     for elmnt in possible:
-        if(elmnt['x'] == width or elmnt['x'] == -1):
+        if(elmnt['x'] == width or elmnt['x'] == -1 or elmnt['y'] == height or elmnt['y'] == -1 or elmnt in snake or elmnt in opponent_dict):
             cnt -= 1
-        elif(elmnt['y'] == height or elmnt['y'] == -1):
-            cnt -= 1
-        elif(elmnt in snake):
-            cnt -= 1
-        elif(elmnt in opponent_dict):
-            cnt -= 1
-    print("POSSIBLE TURNS:", cnt)
     return cnt
+
+# decide_direction_opponent
+# Parameters: Coordinates of self and opponents
+# Returns: A direction to try and move away from an opponent
+def decide_direction_oponent(snake, opponents):
+    global height
+    global width
+
+    head = snake[0]
+
+    if(check_x > check_y and snake_len > optimal_size and x_first(snake, avg_snake, buff, opponents) != False and verify_move(x_first(snake, avg_snake, buff, opponents), snake, height, width, opponents) == True):
+        return x_first(snake, avg_snake, buff, opponents)
+    elif(check_x > check_y and snake_len > optimal_size and y_first(snake, avg_snake, buff, opponents) != False and verify_move(y_first(snake, avg_snake, buff, opponents), snake, height, width, opponents) == True):
+        return y_first(snake, avg_snake, buff, opponents)
+    elif(check_y > check_x and snake_len > optimal_size and y_first(snake, avg_snake, buff, opponents) != False and verify_move(y_first(snake, avg_snake, buff, opponents), snake, height, width, opponents) == True):
+        return y_first(snake, avg_snake, buff, opponents)
+    elif(check_y > check_x and snake_len > optimal_size and x_first(snake, avg_snake, buff, opponents) != False and verify_move(x_first(snake, avg_snake, buff, opponents), snake, height, width, opponents) == True):
+        return x_first(snake, avg_snake, buff, opponents)
 
 # decide_direction_wall
 # Parameters: Coordinates of self
@@ -443,7 +460,6 @@ def y_first(snake, avg_snake, buff, opponents):
 
     head = snake[0]
 
-    print("Doing Y first")
     if(avg_snake[0] >= width/2 and avg_snake[1] >= height/2 and verify_move('up', snake, height, width, opponents) == True): # bottom right
         if(head['y'] > avg_snake[1] - buff):
             return 'up'
