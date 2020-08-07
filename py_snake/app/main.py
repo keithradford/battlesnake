@@ -57,6 +57,8 @@ def start():
 
 @bottle.post('/move')
 def move():
+
+    #Start working on DFS algorithm.
     global height
     global width
     global optimal_size
