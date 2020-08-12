@@ -76,7 +76,7 @@ def setChildren(node):
     global gameData
 
     snakes = gameData['board']['snakes']
-    me = gameData['board']['you']
+    me = gameData['you']
     for i in range(len(snakes)):
         pass
 
