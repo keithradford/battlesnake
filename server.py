@@ -22,8 +22,8 @@ class Battlesnake(object):
         return {
             'apiversion': '1',
             'author': 'keith',
-            'color': '#800020',  # TODO: Personalize
-            'head': 'bwc-ski',  # TODO: Personalize
+            'color': '#800020',
+            'head': 'bwc-ski',
             'tail': 'shac-weight',
         }
 
@@ -36,10 +36,11 @@ class Battlesnake(object):
         data = cherrypy.request.json
 
         print('START')
+        print(data)
         return {
-            "color": "#736CCB",
-            "head": "beluga",
-            "tail": "curled"
+            'color': '#800020',
+            'head': 'bwc-ski',
+            'tail': 'shac-weight',
         }
 
     @cherrypy.expose
