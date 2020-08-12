@@ -10,6 +10,7 @@ This is a simple Battlesnake server written in Python.
 For instructions see https://github.com/BattlesnakeOfficial/starter-snake-python/README.md
 '''
 
+gameData = {}
 
 class Battlesnake(object):
     @cherrypy.expose
@@ -41,12 +42,14 @@ class Battlesnake(object):
     @cherrypy.tools.json_in()
     @cherrypy.tools.json_out()
     def move(self):
+        global gameData
         # This function is called on every turn of a game. It's how your snake decides where to move.
         # Valid moves are 'up', 'down', 'left', or 'right'.
         # TODO: Use the information in cherrypy.request.json to decide your next move.
-        data = cherrypy.request.json
-        print(data['board'])
-        head = Node(data['you']['head'])
+        gameData = cherrypy.request.json
+        print(gameData['board'])
+        head = Node(gameData['you']['head'])
+        setChildren(head)
         print(head.getCoords())
         # Choose a random direction to move in
         possible_moves = ['up', 'down', 'left', 'right']
@@ -65,6 +68,17 @@ class Battlesnake(object):
         print('END')
         return 'ok'
 
+def setChildren(node):
+    global gameData
+
+    snakes = gameData['board']['snakes']
+    me = gameData['board']['you']
+    for i in range(len(snakes)):
+        pass
+
+def validMove(node):
+    global gameDate
+    pass
 
 if __name__ == '__main__':
     server = Battlesnake()
