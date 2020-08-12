@@ -3,7 +3,7 @@ import random
 
 import cherrypy
 
-import tree
+from tree import Node
 
 '''
 This is a simple Battlesnake server written in Python.
@@ -46,6 +46,8 @@ class Battlesnake(object):
         # TODO: Use the information in cherrypy.request.json to decide your next move.
         data = cherrypy.request.json
         print(data['board'])
+        head = Node(data['you']['head'])
+        print(head.getCoords())
         # Choose a random direction to move in
         possible_moves = ['up', 'down', 'left', 'right']
         move = random.choice(possible_moves)
