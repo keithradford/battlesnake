@@ -36,12 +36,7 @@ class Battlesnake(object):
         data = cherrypy.request.json
 
         print('START')
-        print(data)
-        return {
-            'color': '#800020',
-            'head': 'bwc-ski',
-            'tail': 'shac-weight',
-        }
+        return 'ok'
 
     @cherrypy.expose
     @cherrypy.tools.json_in()
